@@ -2,6 +2,38 @@
 
 A lightweight FastAPI service for uploading git patch files or raw patch text and generating a structured code review summary.
 
+## Project Structure
+
+```text
+code-review-assistant/
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── config.py
+│   ├── dependencies.py
+│   ├── exceptions.py
+│   ├── middleware.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── router.py
+│   │   ├── v1/
+│   │   │   ├── __init__.py
+│   │   │   ├── router.py
+│   │   └── v2/
+│   │       └── __init__.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── review_service.py
+│   │   ├── review_logic.py
+│   └── core/
+│       ├── __init__.py
+│       └── logging.py
+├── tests/
+│   ├── test_app.py
+├── pyproject.toml
+└── .env.example
+```
+
 ## Features
 
 - Accepts patch uploads via multipart file upload
@@ -17,34 +49,34 @@ A lightweight FastAPI service for uploading git patch files or raw patch text an
 ## Requirements
 
 - Python 3.14
-- `requests`
 - `fastapi`
-- `uvicorn`
+- `requests`
 - `python-dotenv`
+- `uvicorn`
 
 ## Setup
 
 1. Create and activate a virtual environment:
 
 ```bash
-cd /Users/artemlunev/Documents/Code-Review-Assistant
+cd /Users/arttemlunev/Documents/Code-Review-Assistant
 python -m venv .venv
 source .venv/bin/activate
 ```
 
-2. Install the application dependencies:
+2. Install dependencies:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-3. Install development dependencies for tests and linting:
+3. Install development dependencies:
 
 ```bash
 python -m pip install -r requirements-dev.txt
 ```
 
-4. Copy the environment example to `.env` if needed:
+4. Copy the example environment file:
 
 ```bash
 cp .env.example .env
@@ -54,29 +86,29 @@ cp .env.example .env
 
 The service reads these environment variables from `.env`:
 
-- `OLLAMA_URL` - Ollama server endpoint (default: `http://localhost:11434`)
-- `OLLAMA_MODEL` - Ollama model name to use (default: `gemma4`)
+- `OLLAMA_URL` - Ollama server endpoint
+- `OLLAMA_MODEL` - Ollama model name
 
 ## Running the app
 
-Start the FastAPI application with Uvicorn:
+Start the FastAPI application:
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 The service will be available at `http://127.0.0.1:8000`.
 
 ## API Endpoints
 
-### POST /patch/upload
+### POST /api/v1/patch/upload
 
 Accepts either a multipart file upload or a form field named `patch_text`.
 
 - `file` - patch file as multipart upload
 - `patch_text` - raw patch text as form input
 
-### POST /patch/upload/json
+### POST /api/v1/patch/upload/json
 
 Accepts JSON payload with a `patch_text` string.
 
@@ -88,7 +120,7 @@ Example:
 }
 ```
 
-### GET /health
+### GET /api/v1/health
 
 Returns:
 
@@ -101,7 +133,7 @@ Returns:
 Run the full test suite with coverage:
 
 ```bash
-python -m pytest --cov=main --cov-report=term-missing
+python -m pytest --cov=app --cov-report=term-missing
 ```
 
 ## Linting
@@ -115,4 +147,3 @@ flake8 .
 ## Notes
 
 - `.env` is used for local configuration and should not be committed.
-- The project includes `tests/conftest.py` to ensure the project root is available during pytest collection.
